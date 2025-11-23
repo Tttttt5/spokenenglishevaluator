@@ -1,7 +1,7 @@
 import re
 from typing import Dict, Any, List
 
-# ---------- CONFIG / CONSTANTS ---------- #
+
 
 SALUTATION_NORMAL = ["hi", "hello"]
 SALUTATION_GOOD = [
@@ -46,7 +46,7 @@ FILLER_WORDS = [
     "i mean", "well", "kinda", "sort of", "okay", "ok", "hmm", "ah"
 ]
 
-# very simple sentiment lexicon for "Engagement"
+
 POSITIVE_WORDS = {
     "happy", "excited", "glad", "enjoy", "enjoying", "love", "like",
     "confident", "grateful", "thankful", "proud", "interested",
@@ -57,8 +57,6 @@ NEGATIVE_WORDS = {
     "worried", "hate", "dislike"
 }
 
-# ---------- HELPERS ---------- #
-
 def clean_text(text: str) -> str:
     """Lowercase + collapse whitespace."""
     return re.sub(r"\s+", " ", text.lower()).strip()
@@ -66,7 +64,7 @@ def clean_text(text: str) -> str:
 def tokenize_words(text: str) -> List[str]:
     return clean_text(text).split()
 
-# ---------- SALUTATION ---------- #
+
 
 def detect_salutation(text: str) -> Dict[str, Any]:
     t = clean_text(text)
@@ -82,7 +80,7 @@ def detect_salutation(text: str) -> Dict[str, Any]:
 
     return {"score": 0, "level": "None"}
 
-# ---------- KEYWORDS ---------- #
+
 
 def detect_keywords(text: str) -> Dict[str, Any]:
     t = clean_text(text)
@@ -176,7 +174,7 @@ def speech_rate_score(word_count: int) -> Dict[str, Any]:
 
     return {"score": score, "wpm_estimate": wpm, "band": band}
 
-# ---------- GRAMMAR (HEURISTIC) ---------- #
+
 
 def grammar_score(text: str) -> Dict[str, Any]:
     """
@@ -223,7 +221,7 @@ def grammar_score(text: str) -> Dict[str, Any]:
         "note": "Heuristic grammar score (no external grammar tool)."
     }
 
-# ---------- VOCABULARY (TTR) ---------- #
+
 
 def vocabulary_score(text: str) -> Dict[str, Any]:
     words = tokenize_words(text)
@@ -234,7 +232,7 @@ def vocabulary_score(text: str) -> Dict[str, Any]:
     distinct = len(set(words))
     ttr = distinct / total_words
 
-    # Map TTR to bands
+   
     if ttr >= 0.9:
         score = 100
     elif ttr >= 0.7:
@@ -248,7 +246,7 @@ def vocabulary_score(text: str) -> Dict[str, Any]:
 
     return {"score": score, "ttr": ttr, "total_words": total_words}
 
-# ---------- CLARITY (FILLER WORD RATE) ---------- #
+
 
 def clarity_score(text: str) -> Dict[str, Any]:
     words = tokenize_words(text)
@@ -281,7 +279,7 @@ def clarity_score(text: str) -> Dict[str, Any]:
         "filler_rate_percent": filler_rate
     }
 
-# ---------- ENGAGEMENT (SIMPLE LEXICON-BASED) ---------- #
+
 
 def engagement_score(text: str) -> Dict[str, Any]:
     words = tokenize_words(text)
@@ -295,7 +293,7 @@ def engagement_score(text: str) -> Dict[str, Any]:
     else:
         positive_prob = pos_count / total
 
-    # Convert to 0–100 rubric-like score
+    
     if positive_prob >= 0.9:
         score = 100
     elif positive_prob >= 0.7:
@@ -314,7 +312,7 @@ def engagement_score(text: str) -> Dict[str, Any]:
         "neg_count": neg_count
     }
 
-# ---------- MAIN ENTRY POINT ---------- #
+
 
 def rule_based_scores(text: str) -> Dict[str, Any]:
     word_count = len(tokenize_words(text))
