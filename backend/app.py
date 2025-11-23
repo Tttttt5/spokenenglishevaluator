@@ -2,11 +2,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 
-# ---------- Robust imports for scorer modules ---------- #
-# Works whether you run:
-#   uvicorn backend.app:app --reload
-# or:
-#   uvicorn app:app --reload  (from inside backend folder)
+
 try:
     from backend.scorer.rule_based import rule_based_scores
     from backend.scorer.semantic import semantic_scores
@@ -14,7 +10,7 @@ except ModuleNotFoundError:
     from scorer.rule_based import rule_based_scores
     from scorer.semantic import semantic_scores
 
-# ---------- FastAPI app ---------- #
+
 
 app = FastAPI(title="Spoken English Scorer")
 
@@ -45,7 +41,7 @@ WEIGHTS = {
 def read_root():
     return {"message": "Spoken English Scorer API is running"}
 
-# ---------- Feedback helper ---------- #
+
 
 def feedback_for(metric: str, score: float, details: dict) -> str:
     if metric == "Salutation":
@@ -172,7 +168,7 @@ def feedback_for(metric: str, score: float, details: dict) -> str:
 
     return "No specific feedback available for this criterion."
 
-# ---------- Main scoring endpoint ---------- #
+
 
 @app.post("/score")
 def score_transcript(payload: TranscriptInput):
