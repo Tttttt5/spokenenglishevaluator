@@ -2,11 +2,9 @@ from typing import Dict, Any
 
 from sentence_transformers import SentenceTransformer, util
 
-# Load model once at import time
-# Small, fast model suitable for semantic similarity
 model = SentenceTransformer("all-MiniLM-L6-v2")
 
-# Short descriptions for each rubric metric
+
 SEMANTIC_RUBRIC_DESCRIPTIONS = {
     "Salutation": (
         "A polite greeting at the beginning of the self introduction, such as "
